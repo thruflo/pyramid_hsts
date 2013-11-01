@@ -169,6 +169,15 @@ def secure_request_url(request, method_name, request_cls=None, secure_url=None):
     # Otherwise return a secured method.
     return lambda *args, **kwargs: secure_url(original(*args, **kwargs))
 
+def secure_host_url(request, secure_url=None):
+    """Overrides ``host_url`` to make sure the protocol is secure."""
+    
+    # Test jig.
+    if secure_url is None:
+        secure_url = secure_request_url
+    
+    return secure_url(request, 'host_url')
+
 def secure_application_url(request, secure_url=None):
     """Overrides ``application_url`` to make sure the protocol is secure."""
     
@@ -229,6 +238,7 @@ def includeme(config):
     c = config
     c.add_subscriber(hsts_redirect_to_https, NewRequest)
     c.add_subscriber(set_hsts_header, NewResponse)
+    c.set_request_property(secure_host_url, 'host_url', reify=True)
     c.set_request_property(secure_application_url, 'application_url', reify=True)
     c.set_request_property(secure_resource_url, 'resource_url', reify=True)
     c.set_request_property(secure_route_url, 'route_url', reify=True)
