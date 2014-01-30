@@ -236,6 +236,9 @@ def includeme(config):
     """Allow developers to use ``config.include('pyramid_hsts')``."""
     
     c = config
+    settings = config.registry.settings
+    settings['hsts.protocol_header'] = settings.get('hsts.protocol_header',
+            os.environ.get('HSTS_PROTOCOL_HEADER', None))
     c.add_subscriber(hsts_redirect_to_https, NewRequest)
     c.add_subscriber(set_hsts_header, NewResponse)
     c.set_request_property(secure_host_url, 'host_url', reify=True)
