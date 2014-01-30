@@ -8,6 +8,8 @@
 import logging
 logger = logging.getLogger(__name__)
 
+import os
+
 try:
     import urlparse
 except ImportError: #py3
