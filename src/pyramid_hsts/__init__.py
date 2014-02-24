@@ -129,7 +129,7 @@ def set_hsts_header(event):
     include_subdomains = asbool(settings.get('hsts.include_subdomains', True))
     value = 'max-age={0}'.format(max_age)
     if include_subdomains:
-        value += ' includeSubDomains'
+        value += '; includeSubDomains'
     response.headers.add('Strict-Transport-Security', value)
 
 
