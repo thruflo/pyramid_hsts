@@ -1,4 +1,8 @@
 
+## 1.1.4
+
+Add `;` in between max age and sub domains parts of the header value.
+
 ## 1.1.3
 
 Allow protocol header to be configured with `HSTS_PROTOCOL_HEADER` environment
