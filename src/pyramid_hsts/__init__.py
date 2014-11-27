@@ -253,7 +253,7 @@ def includeme(config):
     settings = config.registry.settings
     for key, value in DEFAULT_SETTINGS.items():
         nskey = 'hsts.{0}'.format(key)
-        settings.set_default(nskey, value)
+        settings.setdefault(nskey, value)
 
     # Config event subscrtibers.
     config.add_subscriber(hsts_redirect_to_https, NewRequest)
