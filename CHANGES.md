@@ -1,3 +1,7 @@
+## 1.2.1
+
+Default `hsts.max_age` to 18 weeks, as per https://hstspreload.appspot.com
+
 ## 1.2
 
 Append `preload` token to the HSTS header value by default and provide

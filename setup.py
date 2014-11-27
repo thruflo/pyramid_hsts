@@ -14,7 +14,7 @@ def _read(file_name):
 
 setup(
     name = 'pyramid_hsts',
-    version = '1.2',
+    version = '1.2.1',
     description = 'HTTP Strict Transport Security for a Pyramid application.',
     author = 'James Arthur',
     author_email = 'username: thruflo, domain: gmail.com',
