@@ -31,8 +31,9 @@ HSTS header, e.g.:
     # defaults to 8640000
     hsts.max_age=4320000
     
-    # defaults to true
+    # both default to true
     hsts.include_subdomains=false
+    hsts.preload=false
 
 [HTTP Strict Transport Security]: http://en.wikipedia.org/wiki/HTTP_Strict_Transport_Security
 [Pyramid]: http://pypi.python.org/pypi/pyramid

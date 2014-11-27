@@ -22,6 +22,13 @@ from pyramid.httpexceptions import HTTPForbidden
 from pyramid.request import Request
 from pyramid.settings import asbool
 
+DEFAULT_SETTINGS = {
+    'max_age': os.environ.get('HSTS_MAX_AGE', 8640000),
+    'preload': os.environ.get('HSTS_PRELOAD', True),
+    'include_subdomains': os.environ.get('HSTS_INCLUDE_SUBDOMAINS', True),
+    'protocol_header': os.environ.get('HSTS_PROTOCOL_HEADER', None),  
+}
+
 def hsts_redirect_to_https(event, secure_url=None):
     """Redirects `http://` GET requests to `https://` and blocks non `https://`
       requests to other request methods.
@@ -107,12 +114,15 @@ def set_hsts_header(event):
       
       Sets ``Strict-Transport-Security`` header::
       
-          >>> mock_request.registry.settings = {'hsts.force_https': 'true'}
+          >>> mock_request.registry.settings = {}
           >>> set_hsts_header(mock_event)
           >>> mock_response.headers.add.assert_called_with('Strict-Transport-Security',
-          ...         'max-age=8640000 includeSubDomains')
-          >>> mock_request.registry.settings = {'hsts.force_https': 'true', 
-          ...         'hsts.max_age': 12, 'hsts.include_subdomains': 'false'}
+          ...         'max-age=8640000; includeSubDomains; preload')
+          >>> mock_request.registry.settings = { 
+          ...     'hsts.max_age': 12,
+          ...     'hsts.include_subdomains': 'false',
+          ...     'hsts.preload': 'false',
+          ... }
           >>> set_hsts_header(mock_event)
           >>> mock_response.headers.add.assert_called_with('Strict-Transport-Security',
           ...         'max-age=12')
@@ -124,14 +134,18 @@ def set_hsts_header(event):
     response = event.response
     settings = request.registry.settings
     
-    # Set `Strict-Transport-Security` header to enable hsts.
+    # Unpack the settings.
     max_age = settings.get('hsts.max_age', 8640000)
     include_subdomains = asbool(settings.get('hsts.include_subdomains', True))
+    preload = asbool(settings.get('hsts.preload', True))
+
+    # Build and set a `Strict-Transport-Security` header.
     value = 'max-age={0}'.format(max_age)
     if include_subdomains:
         value += '; includeSubDomains'
+    if preload:
+        value += '; preload'
     response.headers.add('Strict-Transport-Security', value)
-
 
 def ensure_secure_url(url, parse_url=None):
     """Add an ``s`` to the ``url`` protocol, if necessary."""
@@ -207,7 +221,6 @@ def secure_route_url(request, secure_url=None):
     
     return secure_url(request, 'route_url')
 
-
 def secure_redirect_tween(handler, registry, join_url=None, secure_url=None):
     """Pyramid tween factory that ensures that, if the response is a redirect
       with a relative path, we join it to a url that's secured. (If we don't do
@@ -233,19 +246,24 @@ def secure_redirect_tween(handler, registry, join_url=None, secure_url=None):
     
     return tween
 
-
 def includeme(config):
     """Allow developers to use ``config.include('pyramid_hsts')``."""
     
-    c = config
+    # Apply the default settings.
     settings = config.registry.settings
-    settings['hsts.protocol_header'] = settings.get('hsts.protocol_header',
-            os.environ.get('HSTS_PROTOCOL_HEADER', None))
-    c.add_subscriber(hsts_redirect_to_https, NewRequest)
-    c.add_subscriber(set_hsts_header, NewResponse)
-    c.set_request_property(secure_host_url, 'host_url', reify=True)
-    c.set_request_property(secure_application_url, 'application_url', reify=True)
-    c.set_request_property(secure_resource_url, 'resource_url', reify=True)
-    c.set_request_property(secure_route_url, 'route_url', reify=True)
-    c.add_tween('pyramid_hsts.secure_redirect_tween')
+    for key, value in DEFAULT_SETTINGS.items():
+        nskey = 'hsts.{0}'.format(key)
+        settings.set_default(nskey, value)
 
+    # Config event subscrtibers.
+    config.add_subscriber(hsts_redirect_to_https, NewRequest)
+    config.add_subscriber(set_hsts_header, NewResponse)
+    
+    # Patch request methods.
+    config.set_request_property(secure_host_url, 'host_url', reify=True)
+    config.set_request_property(secure_application_url, 'application_url', reify=True)
+    config.set_request_property(secure_resource_url, 'resource_url', reify=True)
+    config.set_request_property(secure_route_url, 'route_url', reify=True)
+    
+    # Secure redirects.
+    config.add_tween('pyramid_hsts.secure_redirect_tween')
