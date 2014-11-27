@@ -28,8 +28,8 @@ read this, you need to [specify][] the name of the `protocol_header`:
 You can also specify the `max_age` of and whether to `include_subdomains` in your
 HSTS header, e.g.:
 
-    # defaults to 8640000
-    hsts.max_age=4320000
+    # defaults to 10886400
+    hsts.max_age=21772800
     
     # both default to true
     hsts.include_subdomains=false

@@ -23,7 +23,7 @@ from pyramid.request import Request
 from pyramid.settings import asbool
 
 DEFAULT_SETTINGS = {
-    'max_age': os.environ.get('HSTS_MAX_AGE', 8640000),
+    'max_age': os.environ.get('HSTS_MAX_AGE', 10886400),
     'preload': os.environ.get('HSTS_PRELOAD', True),
     'include_subdomains': os.environ.get('HSTS_INCLUDE_SUBDOMAINS', True),
     'protocol_header': os.environ.get('HSTS_PROTOCOL_HEADER', None),  
@@ -135,7 +135,7 @@ def set_hsts_header(event):
     settings = request.registry.settings
     
     # Unpack the settings.
-    max_age = settings.get('hsts.max_age', 8640000)
+    max_age = settings['hsts.max_age']
     include_subdomains = asbool(settings.get('hsts.include_subdomains', True))
     preload = asbool(settings.get('hsts.preload', True))
 
