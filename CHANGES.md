@@ -1,3 +1,7 @@
+## 1.2
+
+Append `preload` token to the HSTS header value by default and provide
+`hsts.preload` setting to switch it on/off.
 
 ## 1.1.4
 
