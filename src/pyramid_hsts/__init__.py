@@ -241,7 +241,8 @@ def secure_redirect_tween(handler, registry, join_url=None, secure_url=None):
         
         response = handler(request)
         if 300 <= response.status_code < 400:
-            response.location = secure_url(response.location)
+            if response.location is not None:
+                response.location = secure_url(response.location)
         return response
     
     return tween
