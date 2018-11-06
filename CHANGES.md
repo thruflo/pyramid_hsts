@@ -1,4 +1,4 @@
-## unreleased
+## 1.3.0
 
 Fix compatibility with Pyramid 1.10 and drop support for Pyramid older than 1.4.
 
