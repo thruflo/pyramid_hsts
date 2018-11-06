@@ -1,3 +1,7 @@
+## unreleased
+
+Fix compatibility with Pyramid 1.10 and drop support for Pyramid older than 1.4.
+
 ## 1.2.1
 
 Default `hsts.max_age` to 18 weeks, as per https://hstspreload.appspot.com
