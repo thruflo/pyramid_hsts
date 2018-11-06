@@ -9,7 +9,7 @@ def _read(file_name):
     text = sock.read()
     sock.close()
     return text
-    
+
 
 
 setup(
@@ -42,9 +42,4 @@ setup(
     install_requires=[
         'pyramid',
     ],
-    tests_require = [
-        'coverage',
-        'nose',
-        'mock',
-    ]
 )
