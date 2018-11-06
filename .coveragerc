@@ -1,0 +1,8 @@
+[run]
+branch = True
+source = pyramid_hsts
+
+[paths]
+source =
+   src/pyramid_hsts
+   .tox/*/lib/python*/site-packages/pyramid_hsts
