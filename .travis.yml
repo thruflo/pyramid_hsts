@@ -1,0 +1,17 @@
+---
+
+dist: xenial
+sudo: true
+
+language: python
+install: pip install -U tox
+script: tox
+
+matrix:
+  include:
+    - python: 2.7
+      env:
+        - TOXENV=py27
+    - python: 3.7
+      env:
+        - TOXENV=py37
