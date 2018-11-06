@@ -251,7 +251,13 @@ def secure_redirect_tween(handler, registry, join_url=None, secure_url=None):
     return tween
 
 def includeme(config):
-    """Allow developers to use ``config.include('pyramid_hsts')``."""
+    """
+    Allow developers to use ``config.include('pyramid_hsts')``.
+
+    >>> from pyramid.config import Configurator
+    >>> config = Configurator()
+    >>> config.include('pyramid_hsts')
+    """
 
     # Apply the default settings.
     settings = config.registry.settings
@@ -264,10 +270,10 @@ def includeme(config):
     config.add_subscriber(set_hsts_header, NewResponse)
 
     # Patch request methods.
-    config.set_request_property(secure_host_url, 'host_url', reify=True)
-    config.set_request_property(secure_application_url, 'application_url', reify=True)
-    config.set_request_property(secure_resource_url, 'resource_url', reify=True)
-    config.set_request_property(secure_route_url, 'route_url', reify=True)
+    config.add_request_method(secure_host_url, 'host_url', reify=True)
+    config.add_request_method(secure_application_url, 'application_url', reify=True)
+    config.add_request_method(secure_resource_url, 'resource_url', reify=True)
+    config.add_request_method(secure_route_url, 'route_url', reify=True)
 
     # Secure redirects.
     config.add_tween('pyramid_hsts.secure_redirect_tween')
