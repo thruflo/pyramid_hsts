@@ -17,7 +17,7 @@ setup(
     version = '1.3.0',
     description = 'HTTP Strict Transport Security for a Pyramid application.',
     author = 'James Arthur',
-    author_email = 'username: thruflo, domain: gmail.com',
+    author_email = 'thruflo@gmail.com',
     url = 'http://github.com/thruflo/pyramid_hsts',
     classifiers = [
         'Development Status :: 5 - Production/Stable',
